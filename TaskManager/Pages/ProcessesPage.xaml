@@ -22,6 +22,26 @@
         </Grid.RowDefinitions>
 
         <TextBlock Margin="0,4,0,36" Text="Processes" Style="{StaticResource TitleTextBlockStyle}"/>
+        <Grid Margin="0, 4, 0, 36" HorizontalAlignment="Right">
+            <CommandBar DefaultLabelPosition="Right" Background="Transparent" IsDynamicOverflowEnabled="False">
+                <AppBarButton x:Name="RunNewTaskButton" Label="Run new task" Tag="RunNewTask" Click="AppBarButton_Click">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xEFDA;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarSeparator/>
+                <AppBarButton x:Name="EndTaskButton" Label="End task" Tag="EndTask" Click="AppBarButton_Click">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE733;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton x:Name="EfficiencyModeButton" Label="Efficiency Mode" Tag="EfficiencyMode" Click="AppBarButton_Click">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xEC0A;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar>
+        </Grid>
 
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
@@ -52,6 +72,8 @@
                       ItemsSource="{x:Bind Processes}"
                       SelectionMode="Single"
                       IsItemClickEnabled="True"
+                      ContainerContentChanging="ProcessListView_ContainerContentChanging"
+                      SelectionChanged="ProcessListView_SelectionChanged"
                       Padding="0">
 
                 <ListView.ItemContainerStyle>
@@ -62,23 +84,23 @@
                         <Setter Property="ContextFlyout">
                             <Setter.Value>
                                 <MenuFlyout>
-                                    <MenuFlyoutItem Text="Expand" Tag="Expand" Click="MenuFlyout_Click">
+                                    <MenuFlyoutItem Text="Expand" Tag="Expand" IsEnabled="False" Click="MenuFlyoutItem_Click">
                                         <MenuFlyoutItem.Icon>
                                             <FontIcon Glyph="&#xE70D;" />
                                         </MenuFlyoutItem.Icon>
                                     </MenuFlyoutItem>
-                                    <MenuFlyoutItem Text="End task" Tag="EndTask" Click="MenuFlyout_Click">
+                                    <MenuFlyoutItem Text="End task" Tag="EndTask" Click="MenuFlyoutItem_Click">
                                         <MenuFlyoutItem.Icon>
                                             <FontIcon Glyph="&#xE711;" />
                                         </MenuFlyoutItem.Icon>
                                     </MenuFlyoutItem>
                                     <MenuFlyoutSeparator/>
-                                    <MenuFlyoutItem Text="Open file location" Tag="OpenFileLocation"  Click="MenuFlyout_Click">
+                                    <MenuFlyoutItem Text="Open file location" Tag="OpenFileLocation"  Click="MenuFlyoutItem_Click">
                                         <MenuFlyoutItem.Icon>
                                             <FontIcon Glyph="&#xE8DA;" />
                                         </MenuFlyoutItem.Icon>
                                     </MenuFlyoutItem>
-                                    <MenuFlyoutItem Text="Properties" Tag="Properties"  Click="MenuFlyout_Click">
+                                    <MenuFlyoutItem Text="Properties" Tag="Properties"  Click="MenuFlyoutItem_Click">
                                         <MenuFlyoutItem.Icon>
                                             <FontIcon Glyph="&#xE8E5;" />
                                         </MenuFlyoutItem.Icon>

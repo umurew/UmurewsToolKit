@@ -24,9 +24,9 @@
             Title="Task Manager"
             IsPaneToggleButtonVisible="True"
             PaneToggleRequested="TitleBar_PaneToggleRequested">
-            <!--TitleBar.IconSource>
-                <ImageIconSource ImageSource="/Assets/Square44x44Logo.png" />
-            </TitleBar.IconSource!-->
+            <TitleBar.IconSource>
+                <FontIconSource Glyph="&#xF120;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+            </TitleBar.IconSource>
             <TitleBar.Content>
                 <AutoSuggestBox PlaceholderText="Search.." Width="360" HorizontalAlignment="Center" />
             </TitleBar.Content>
@@ -41,7 +41,7 @@
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Processes" Tag="ProcessesPage" IsSelected="True">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE950;" />
+                        <FontIcon Glyph="&#xECAA;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Content="Startup" Tag="StartupPage">

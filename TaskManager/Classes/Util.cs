@@ -5,9 +5,9 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace TaskManager.Classes
 {
-    public class Util
+    public static class Util
     {
-        public async void ShowContentDialog(string Title, string Content, XamlRoot XamlRoot)
+        public static async void ShowContentDialog(string Title, string Content, XamlRoot XamlRoot)
         {
             ContentDialog Dialog = new ContentDialog
             {
@@ -20,7 +20,7 @@ namespace TaskManager.Classes
             await Dialog.ShowAsync();
         }
 
-        public async Task<bool> ShowConfirmationDialog(string Title, string Content, XamlRoot XamlRoot)
+        public static async Task<bool> ShowConfirmationDialog(string Title, string Content, XamlRoot XamlRoot)
         {
             ContentDialog Dialog = new ContentDialog
             {

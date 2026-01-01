@@ -7,11 +7,43 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace TaskManager.Classes
 {
     public class ProcessItemViewModel : INotifyPropertyChanged
     {
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SHELLEXECUTEINFO
+        {
+            public int cbSize;
+            public uint fMask;
+            public IntPtr hwnd;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpVerb;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpFile;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpParameters;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpDirectory;
+            public int nShow;
+            public IntPtr hInstApp;
+            public IntPtr lpIDList;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpClass;
+            public IntPtr hkeyClass;
+            public uint dwHotKey;
+            public IntPtr hIcon;
+            public IntPtr hProcess;
+        }
+
+        [DllImport("shell32.dll", CharSet = CharSet.Auto)]
+        public static extern bool ShellExecuteEx(ref SHELLEXECUTEINFO lpExecInfo);
+
+        private const uint SEE_MASK_INVOKEIDLIST = 0x0000000c;
+        private const int SW_SHOW = 5;
+
         public event PropertyChangedEventHandler? PropertyChanged;
         private Process _Process;
         private DateTime _LastCPUCheck;
@@ -142,13 +174,6 @@ namespace TaskManager.Classes
             try
             {
                 _Process.Kill();
-
-                AppNotification Notification = new AppNotificationBuilder()
-                    .AddText("Task Manager")
-                    .AddText($"{_Process.ProcessName} has been terminated.")
-                    .BuildNotification();
-
-                AppNotificationManager.Default.Show(Notification);
             }
             catch (Exception Exception)
             {
@@ -156,6 +181,71 @@ namespace TaskManager.Classes
                     .AddText($"{typeof(Exception).ToString()} Occured")
                     .AddText($"{Exception.Message}")
                     .BuildNotification();
+
+                AppNotificationManager.Default.Show(Notification);
+            }
+        }
+
+        public void OpenFileLocation(XamlRoot XamlRoot)
+        {
+            try
+            {
+                if (_Process.MainModule is not null)
+                    Process.Start("explorer.exe", $"/select,\"{_Process.MainModule.FileName}\"");
+                else
+                {
+                    AppNotification Notification = new AppNotificationBuilder()
+                    .AddText($"Exception Occured")
+                    .AddText($"MainModule was null.")
+                    .BuildNotification();
+
+                    AppNotificationManager.Default.Show(Notification);
+                }
+
+            }
+            catch (Exception Exception)
+            {
+                AppNotification Notification = new AppNotificationBuilder()
+                    .AddText($"{typeof(Exception).ToString()} Occured")
+                    .AddText($"{Exception.Message}")
+                    .BuildNotification();
+
+                AppNotificationManager.Default.Show(Notification);
+            }
+        }
+
+        public void OpenProperties(XamlRoot XamlRoot)
+        {
+            try
+            {
+                if (_Process.MainModule is not null)
+                {
+                    SHELLEXECUTEINFO ShellExecuteInfo = new SHELLEXECUTEINFO();
+                    ShellExecuteInfo.cbSize = Marshal.SizeOf(ShellExecuteInfo);
+                    ShellExecuteInfo.lpVerb = "properties";
+                    ShellExecuteInfo.lpFile = _Process.MainModule.FileName;
+                    ShellExecuteInfo.nShow = SW_SHOW;
+                    ShellExecuteInfo.fMask = SEE_MASK_INVOKEIDLIST;
+
+                    if (!ShellExecuteEx(ref ShellExecuteInfo))
+                        throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
+                }
+                else
+                {
+                    AppNotification Notification = new AppNotificationBuilder()
+                    .AddText($"Exception Occured")
+                    .AddText($"MainModule was null.")
+                    .BuildNotification();
+
+                    AppNotificationManager.Default.Show(Notification);
+                }
+            }
+            catch (Exception Exception)
+            {
+                AppNotification Notification = new AppNotificationBuilder()
+                .AddText($"{typeof(Exception).ToString()} Occured")
+                .AddText($"{Exception.Message}")
+                .BuildNotification();
 
                 AppNotificationManager.Default.Show(Notification);
             }
